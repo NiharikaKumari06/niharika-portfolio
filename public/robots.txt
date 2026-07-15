@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://niharika-kumari.vercel.app/sitemap.xml
