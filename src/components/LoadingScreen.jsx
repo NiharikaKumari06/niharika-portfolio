@@ -1,29 +1,29 @@
-import { motion } from 'framer-motion'
+import React from 'react';
+import { motion } from 'framer-motion';
 
 export default function LoadingScreen() {
   return (
     <motion.div
-      initial={{ opacity: 1 }}
+      className="fixed inset-0 bg-darkBg z-[9999] flex flex-col items-center justify-center text-white"
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center gap-4 bg-white dark:bg-ink-950"
+      transition={{ duration: 0.5 }}
     >
-      <div className="font-mono text-xs uppercase tracking-[0.3em] text-accent-500">
-        loading_portfolio.py
-      </div>
-      <div className="flex items-center gap-3">
-        <span className="font-display text-2xl font-semibold text-ink-900 dark:text-white">
-          Niharika Kumari
-        </span>
-        <span className="h-6 w-[2px] animate-blink bg-accent-500" />
-      </div>
-      <div className="mt-2 h-1 w-40 overflow-hidden rounded-full bg-ink-100 dark:bg-white/10">
+      <div className="relative flex flex-col items-center">
         <motion.div
-          className="h-full bg-accent-500"
-          initial={{ x: '-100%' }}
-          animate={{ x: '100%' }}
-          transition={{ duration: 1.1, repeat: Infinity, ease: 'easeInOut' }}
+          className="w-16 h-16 border-4 border-brand-600 rounded-full border-t-transparent"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
         />
+        <motion.h2 
+          className="mt-6 text-xl font-bold tracking-widest text-brand-400"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          NIHARIKA KUMARI
+        </motion.h2>
+        <span className="text-xs text-slate-400 mt-2 font-medium tracking-wide">Loading Portfolio...</span>
       </div>
     </motion.div>
-  )
+  );
 }

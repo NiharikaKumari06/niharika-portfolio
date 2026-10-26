@@ -1,80 +1,86 @@
-import { FaLinkedin, FaGithub } from 'react-icons/fa'
-import { FiMail } from 'react-icons/fi'
-
-const LINKS = [
-  { label: 'About', href: '#about' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Contact', href: '#contact' },
-]
+import React from 'react';
+import { FiLinkedin, FiGithub, FiMail, FiDownload, FiArrowUp } from 'react-icons/fi';
 
 export default function Footer() {
-  const year = new Date().getFullYear()
+  const currentYear = new Date().getFullYear();
 
-  const handleClick = (e, href) => {
-    e.preventDefault()
-    document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
-  }
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
-    <footer className="border-t border-ink-100 dark:border-white/10">
-      <div className="section-shell !py-12">
-        <div className="flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
-          <div>
-            <p className="font-display text-lg font-semibold text-ink-900 dark:text-white">
-              Niharika Kumari
-            </p>
-            <p className="mt-1 text-sm text-ink-500 dark:text-ink-400">
-              Business Analyst · Data Analyst · Python Developer
+    <footer className="border-t border-slate-200/80 dark:border-slate-800/80 py-12 bg-white dark:bg-darkBg transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Identity */}
+          <div className="space-y-1.5 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start space-x-2">
+              <span className="w-7 h-7 rounded-lg bg-brand-600 text-white flex items-center justify-center text-xs font-black shadow-md shadow-brand-600/30">
+                NK
+              </span>
+              <p className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">
+                Niharika Kumari
+              </p>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Business Analyst • Data Analyst • Python Developer
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-x-6 gap-y-2">
-            {LINKS.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={(e) => handleClick(e, link.href)}
-                className="text-sm text-ink-600 transition-colors hover:text-accent-600 dark:text-ink-300 dark:hover:text-accent-400"
-              >
-                {link.label}
-              </a>
-            ))}
+          {/* Quick Nav */}
+          <div className="flex flex-wrap justify-center gap-6 text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-400">
+            <a href="#home" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Home</a>
+            <a href="#about" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">About</a>
+            <a href="#experience" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Experience</a>
+            <a href="#projects" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Projects</a>
+            <a href="#skills" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Skills</a>
+            <a href="#education" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Education</a>
+            <a href="#contact" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">Contact</a>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Socials & Back to Top */}
+          <div className="flex items-center space-x-3 text-slate-500 dark:text-slate-400">
             <a
-              href="https://www.linkedin.com/in/niharika-kumari-72318b229"
+              href="https://linkedin.com"
               target="_blank"
               rel="noreferrer"
-              aria-label="LinkedIn"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 hover:border-accent-400 hover:text-accent-600 dark:border-white/15 dark:text-ink-200"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+              title="LinkedIn"
             >
-              <FaLinkedin size={16} />
+              <FiLinkedin className="w-4 h-4" />
             </a>
             <a
-              href="https://github.com/NiharikaKumari06"
+              href="https://github.com"
               target="_blank"
               rel="noreferrer"
-              aria-label="GitHub"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 hover:border-accent-400 hover:text-accent-600 dark:border-white/15 dark:text-ink-200"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-colors"
+              title="GitHub"
             >
-              <FaGithub size={16} />
+              <FiGithub className="w-4 h-4" />
             </a>
             <a
-              href="mailto:niharikakumari913@gmail.com"
-              aria-label="Email"
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-200 text-ink-600 hover:border-accent-400 hover:text-accent-600 dark:border-white/15 dark:text-ink-200"
+              href="/resume.pdf"
+              download="Niharika_Kumari_Resume.pdf"
+              className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:text-brand-600 dark:hover:text-brand-400 transition-colors"
+              title="Download Resume"
             >
-              <FiMail size={16} />
+              <FiDownload className="w-4 h-4" />
             </a>
+            <button
+              onClick={scrollToTop}
+              className="p-2 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 hover:bg-brand-600 hover:text-white transition-all ml-2"
+              title="Back to Top"
+            >
+              <FiArrowUp className="w-4 h-4" />
+            </button>
           </div>
         </div>
 
-        <div className="mt-8 border-t border-ink-100 pt-6 text-xs text-ink-400 dark:border-white/10">
-          © {year} Niharika Kumari. All rights reserved.
+        <div className="pt-6 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 dark:text-slate-500 gap-2">
+          <p>&copy; {currentYear} Niharika Kumari. All rights reserved.</p>
+          <p>Built with React, Vite & Tailwind CSS • Deployed on Vercel</p>
         </div>
       </div>
     </footer>
-  )
+  );
 }

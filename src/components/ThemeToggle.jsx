@@ -1,19 +1,14 @@
-import { FiSun, FiMoon } from 'react-icons/fi'
-import { useTheme } from '../context/ThemeContext.jsx'
+import React from 'react';
+import { FiSun, FiMoon } from 'react-icons/fi';
 
-export default function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme()
-
+export default function ThemeToggle({ darkMode, toggleTheme }) {
   return (
     <button
       onClick={toggleTheme}
-      aria-label="Toggle dark mode"
-      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-ink-200
-                 text-ink-600 transition-colors hover:border-accent-400 hover:text-accent-600
-                 dark:border-white/15 dark:text-ink-200 dark:hover:border-accent-400 dark:hover:text-accent-400
-                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
+      className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300 hover:text-brand-600 dark:hover:text-brand-400 hover:scale-105 transition-all duration-200 shadow-sm"
+      aria-label="Toggle structural display mode"
     >
-      {theme === 'dark' ? <FiSun size={18} /> : <FiMoon size={18} />}
+      {darkMode ? <FiSun className="w-5 h-5" /> : <FiMoon className="w-5 h-5" />}
     </button>
-  )
+  );
 }

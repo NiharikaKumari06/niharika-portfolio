@@ -1,15 +1,17 @@
-import Hero from '../components/Hero.jsx'
-import About from '../components/About.jsx'
-import Experience from '../components/Experience.jsx'
-import Projects from '../components/Projects.jsx'
-import Skills from '../components/Skills.jsx'
-import Certifications from '../components/Certifications.jsx'
-import Education from '../components/Education.jsx'
-import Contact from '../components/Contact.jsx'
+import React from 'react';
+import Hero from '../components/Hero';
+import About from '../components/About';
+import Experience from '../components/Experience';
+import Projects from '../components/Projects';
+import Skills from '../components/Skills';
+import Certifications from '../components/Certifications';
+import Education from '../components/Education';
+import Contact from '../components/Contact';
+import Footer from '../components/Footer';
 
 export default function Home() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Hero />
       <About />
       <Experience />
@@ -18,6 +20,7 @@ export default function Home() {
       <Certifications />
       <Education />
       <Contact />
-    </>
-  )
+      <Footer />
+    </div>
+  );
 }

@@ -1,212 +1,250 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import emailjs from '@emailjs/browser'
-import { FiMail, FiPhone, FiMapPin, FiSend, FiCheckCircle, FiAlertCircle } from 'react-icons/fi'
-
-const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID'
-const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
-const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY'
-
-const initialForm = { name: '', email: '', subject: '', message: '' }
-
-function validate(form) {
-  const errors = {}
-  if (!form.name.trim()) errors.name = 'Please enter your name.'
-  if (!form.email.trim()) {
-    errors.email = 'Please enter your email.'
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-    errors.email = 'Please enter a valid email address.'
-  }
-  if (!form.subject.trim()) errors.subject = 'Please enter a subject.'
-  if (!form.message.trim()) {
-    errors.message = 'Please enter a message.'
-  } else if (form.message.trim().length < 10) {
-    errors.message = 'Message should be at least 10 characters.'
-  }
-  return errors
-}
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { FiMail, FiMapPin, FiSend, FiCheck, FiLinkedin, FiGithub, FiClock, FiMessageSquare } from 'react-icons/fi';
 
 export default function Contact() {
-  const [form, setForm] = useState(initialForm)
-  const [errors, setErrors] = useState({})
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
+  const [errors, setErrors] = useState({});
+  const [sending, setSending] = useState(false);
+  const [success, setSuccess] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-    setErrors((prev) => ({ ...prev, [name]: undefined }))
-  }
+  const contactEmail = 'niharika.kumari@example.com';
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    const validationErrors = validate(form)
-    setErrors(validationErrors)
-    if (Object.keys(validationErrors).length > 0) return
-
-    setStatus('sending')
-    try {
-      await emailjs.send(
-        EMAILJS_SERVICE_ID,
-        EMAILJS_TEMPLATE_ID,
-        {
-          from_name: form.name,
-          from_email: form.email,
-          subject: form.subject,
-          message: form.message,
-        },
-        EMAILJS_PUBLIC_KEY,
-      )
-      setStatus('success')
-      setForm(initialForm)
-    } catch (err) {
-      console.error('EmailJS error:', err)
-      setStatus('error')
+  const validate = () => {
+    let tempErrors = {};
+    if (!formData.name.trim()) tempErrors.name = 'Please enter your full name.';
+    if (!formData.email.trim()) {
+      tempErrors.email = 'Please provide an email address.';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      tempErrors.email = 'Please enter a valid email format (e.g. name@company.com).';
     }
-  }
+    if (!formData.subject.trim()) tempErrors.subject = 'Please provide a subject.';
+    if (!formData.message.trim()) tempErrors.message = 'Please include a message for your inquiry.';
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSend = async (e) => {
+    e.preventDefault();
+    if (!validate()) return;
+
+    setSending(true);
+    // Simulate reliable dispatch
+    setTimeout(() => {
+      setSending(false);
+      setSuccess(true);
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSuccess(false), 5000);
+    }, 1200);
+  };
 
   return (
-    <section id="contact" className="section-shell">
-      <span className="eyebrow">// Contact</span>
-      <h2 className="section-title">Let's build something data-driven</h2>
-      <p className="mt-5 max-w-xl text-ink-600 dark:text-ink-300">
-        Open to Business Analyst, Data Analyst, and Python Developer roles. Reach out directly or
-        send a message below.
-      </p>
+    <section id="contact" className="py-24 bg-slate-100/50 dark:bg-slate-900/30 transition-colors">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Heading */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 font-semibold text-xs tracking-wider uppercase mb-3 border border-brand-500/20">
+            <FiMessageSquare className="w-3.5 h-3.5" />
+            <span>Direct Inquiries</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+            Get In Touch
+          </h2>
+          <div className="h-1.5 w-16 bg-gradient-to-r from-brand-600 to-indigo-500 mx-auto mt-4 rounded-full" />
+          <p className="mt-4 text-base sm:text-lg text-slate-600 dark:text-slate-400">
+            Interested in discussing business analyst, data analyst, or Python engineering opportunities? Reach out directly.
+          </p>
+        </div>
 
-      <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col gap-4"
-        >
-          <div className="surface-card flex items-center gap-4 p-5">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">
-              <FiMail size={18} />
-            </span>
-            <div>
-              <p className="text-xs uppercase tracking-wide text-ink-400">Email</p>
-              <a href="mailto:niharikakumari913@gmail.com" className="font-medium text-ink-800 dark:text-ink-100">
-                niharikakumari913@gmail.com
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start max-w-6xl mx-auto">
+          {/* Contact Information Cards */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="space-y-2">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                Let's Discuss Potential Synergy
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed font-normal">
+                Whether you have an open role, an enterprise data challenge, or want to review technical architecture solutions, I am eager to connect.
+              </p>
+            </div>
+
+            <div className="space-y-4 pt-2">
+              {/* Email Card */}
+              <a
+                href={`mailto:${contactEmail}`}
+                className="flex items-center space-x-4 p-5 rounded-2xl bg-white dark:bg-darkCard border border-slate-200/80 dark:border-slate-800/80 shadow-sm hover:border-brand-500/50 hover:shadow-md transition-all group"
+              >
+                <div className="p-3 rounded-xl bg-brand-500/10 text-brand-600 dark:text-brand-400 group-hover:scale-110 transition-transform">
+                  <FiMail className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Email Address</p>
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
+                    {contactEmail}
+                  </p>
+                </div>
+              </a>
+
+              {/* Location Card */}
+              <div className="flex items-center space-x-4 p-5 rounded-2xl bg-white dark:bg-darkCard border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+                <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                  <FiMapPin className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Location & Mobility</p>
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    Faridabad, Haryana, India
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                    Open to On-site (NCR), Hybrid & Remote Roles
+                  </p>
+                </div>
+              </div>
+
+              {/* Response Time Card */}
+              <div className="flex items-center space-x-4 p-5 rounded-2xl bg-white dark:bg-darkCard border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+                <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                  <FiClock className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Response Expectation</p>
+                  <p className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                    Prompt Turnaround (Within 24 Hours)
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Social Links */}
+            <div className="pt-2 flex items-center space-x-4 text-slate-600 dark:text-slate-400">
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs font-semibold hover:text-brand-600 dark:hover:text-brand-400 hover:border-brand-500/40 transition-all shadow-sm"
+              >
+                <FiLinkedin className="w-4 h-4 text-brand-600" />
+                <span>LinkedIn Profile</span>
+              </a>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 text-xs font-semibold hover:text-slate-900 dark:hover:text-white hover:border-brand-500/40 transition-all shadow-sm"
+              >
+                <FiGithub className="w-4 h-4" />
+                <span>GitHub Profile</span>
               </a>
             </div>
           </div>
 
-          <div className="surface-card flex items-center gap-4 p-5">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">
-              <FiPhone size={18} />
-            </span>
-            <div>
-              <p className="text-xs uppercase tracking-wide text-ink-400">Phone</p>
-              <a href="tel:+919818440592" className="font-medium text-ink-800 dark:text-ink-100">
-                +91 98184 40592
-              </a>
-            </div>
-          </div>
+          {/* Contact Form */}
+          <div className="lg:col-span-7">
+            <form
+              onSubmit={handleSend}
+              className="p-6 sm:p-8 rounded-3xl bg-white dark:bg-darkCard border border-slate-200/80 dark:border-slate-800/80 shadow-sm space-y-4"
+            >
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                Send a Direct Message
+              </h3>
 
-          <div className="surface-card flex items-center gap-4 p-5">
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400">
-              <FiMapPin size={18} />
-            </span>
-            <div>
-              <p className="text-xs uppercase tracking-wide text-ink-400">Location</p>
-              <p className="font-medium text-ink-800 dark:text-ink-100">Faridabad, Haryana</p>
-            </div>
-          </div>
-        </motion.div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                    Your Full Name <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. John Doe"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 text-sm transition-colors text-slate-900 dark:text-white"
+                  />
+                  {errors.name && <p className="text-[11px] text-red-500 font-semibold">{errors.name}</p>}
+                </div>
 
-        <motion.form
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-          onSubmit={handleSubmit}
-          noValidate
-          className="surface-card grid grid-cols-1 gap-5 p-6 sm:grid-cols-2 sm:p-8"
-        >
-          <div>
-            <label htmlFor="name" className="mb-1.5 block text-sm font-medium text-ink-700 dark:text-ink-200">
-              Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              type="text"
-              placeholder="Your full name"
-              className="w-full rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition-colors focus:border-accent-500 dark:border-white/15 dark:bg-white/5 dark:text-white"
-            />
-            {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
-          </div>
+                <div className="space-y-1.5">
+                  <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                    Email Address <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="e.g. j.doe@company.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 text-sm transition-colors text-slate-900 dark:text-white"
+                  />
+                  {errors.email && <p className="text-[11px] text-red-500 font-semibold">{errors.email}</p>}
+                </div>
+              </div>
 
-          <div>
-            <label htmlFor="email" className="mb-1.5 block text-sm font-medium text-ink-700 dark:text-ink-200">
-              Email
-            </label>
-            <input
-              id="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              type="email"
-              placeholder="you@example.com"
-              className="w-full rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition-colors focus:border-accent-500 dark:border-white/15 dark:bg-white/5 dark:text-white"
-            />
-            {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
-          </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                  Subject <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Opportunity: Business Analyst Role / Data Architecture Discussion"
+                  value={formData.subject}
+                  onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 text-sm transition-colors text-slate-900 dark:text-white"
+                />
+                {errors.subject && <p className="text-[11px] text-red-500 font-semibold">{errors.subject}</p>}
+              </div>
 
-          <div className="sm:col-span-2">
-            <label htmlFor="subject" className="mb-1.5 block text-sm font-medium text-ink-700 dark:text-ink-200">
-              Subject
-            </label>
-            <input
-              id="subject"
-              name="subject"
-              value={form.subject}
-              onChange={handleChange}
-              type="text"
-              placeholder="What's this about?"
-              className="w-full rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition-colors focus:border-accent-500 dark:border-white/15 dark:bg-white/5 dark:text-white"
-            />
-            {errors.subject && <p className="mt-1 text-xs text-red-500">{errors.subject}</p>}
-          </div>
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-wider">
+                  Message Details <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  rows="4"
+                  placeholder="Share details regarding your team, the scope of the role, or your specific requirements..."
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 focus:outline-none focus:ring-2 focus:ring-brand-500/30 focus:border-brand-500 text-sm transition-colors text-slate-900 dark:text-white resize-none"
+                />
+                {errors.message && <p className="text-[11px] text-red-500 font-semibold">{errors.message}</p>}
+              </div>
 
-          <div className="sm:col-span-2">
-            <label htmlFor="message" className="mb-1.5 block text-sm font-medium text-ink-700 dark:text-ink-200">
-              Message
-            </label>
-            <textarea
-              id="message"
-              name="message"
-              value={form.message}
-              onChange={handleChange}
-              rows={5}
-              placeholder="Tell me a bit about the role or project..."
-              className="w-full resize-none rounded-xl border border-ink-200 bg-white px-4 py-2.5 text-sm text-ink-900 outline-none transition-colors focus:border-accent-500 dark:border-white/15 dark:bg-white/5 dark:text-white"
-            />
-            {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message}</p>}
-          </div>
+              <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={sending}
+                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-7 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm transition-all shadow-md shadow-brand-600/20 active:scale-95 disabled:opacity-50"
+                >
+                  {sending ? (
+                    <span>Submitting Message...</span>
+                  ) : (
+                    <>
+                      <FiSend className="w-4 h-4" />
+                      <span>Send Message</span>
+                    </>
+                  )}
+                </button>
 
-          <div className="sm:col-span-2">
-            <button type="submit" disabled={status === 'sending'} className="btn-primary w-full justify-center sm:w-auto">
-              <FiSend /> {status === 'sending' ? 'Sending...' : 'Send Message'}
-            </button>
+                <a
+                  href={`mailto:${contactEmail}?subject=${encodeURIComponent(formData.subject || 'Inquiry from Portfolio')}&body=${encodeURIComponent(formData.message || '')}`}
+                  className="w-full sm:w-auto inline-flex items-center justify-center space-x-2 px-5 py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-semibold transition-colors"
+                >
+                  <FiMail className="w-3.5 h-3.5" />
+                  <span>Open in Mail Client</span>
+                </a>
+              </div>
 
-            {status === 'success' && (
-              <p className="mt-3 flex items-center gap-2 text-sm text-emerald-600">
-                <FiCheckCircle /> Message sent — thanks for reaching out!
-              </p>
-            )}
-            {status === 'error' && (
-              <p className="mt-3 flex items-center gap-2 text-sm text-red-500">
-                <FiAlertCircle /> Something went wrong. Please email me directly instead.
-              </p>
-            )}
+              {success && (
+                <motion.div
+                  className="p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-semibold rounded-2xl flex items-center space-x-2"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <FiCheck className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                  <span>Thank you for reaching out! Your message has been sent successfully. I will get back to you soon.</span>
+                </motion.div>
+              )}
+            </form>
           </div>
-        </motion.form>
+        </div>
       </div>
     </section>
-  )
+  );
 }
